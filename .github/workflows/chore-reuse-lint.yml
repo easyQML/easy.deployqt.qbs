@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: © 2024 Serhii “GooRoo” Olendarenko
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: 'chore: REUSE Compliance'
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    name: REUSE Compliance Check
+    runs-on: [ubuntu-latest]
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v4
+    - name: reuse lint
+      uses: fsfe/reuse-action@v4

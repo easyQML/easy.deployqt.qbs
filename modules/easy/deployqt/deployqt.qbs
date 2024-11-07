@@ -34,7 +34,7 @@ Module {
 
 		qbs.install: true
 		qbs.installPrefix: project.installContentsPath
-		qbs.installDir: project.installLibraryDir
+		qbs.installDir: project.installLibrariesDir
 		qbs.installSourceBase: qbs.targetOS.contains('windows')? Qt.core.binPath : Qt.core.libPath
 	}
 
@@ -326,7 +326,7 @@ Module {
 						filePath: DeployQt.toTargetPath(
 							dep,
 							product.qbs.targetOS.contains('windows')? product.Qt.core.binPath : product.Qt.core.libPath,
- 							project.installLibraryDir
+ 							project.installLibrariesDir
 						),
 						fileTags: ['dmg.input']
 					}
@@ -347,7 +347,7 @@ Module {
 					const targetPath = DeployQt.toTargetPath(
 						dep,
 						product.qbs.targetOS.contains('windows')? product.Qt.core.binPath : product.Qt.core.libPath,
-						project.installLibraryDir
+						project.installLibrariesDir
 					)
 
 					if (!File.exists(targetPath)) {

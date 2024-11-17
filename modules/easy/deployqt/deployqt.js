@@ -210,8 +210,7 @@ function getLibFilesForQtModule(Qt, mod) {
 	if (qbs.targetOS.contains('windows')) {
 		const dir = Qt.core.binPath
 		const basename = FileInfo.baseName(Qt[mod].libNameForLinker)
-		const suffix = qbs.buildVariant === 'debug' ? 'd' : ''
-		const libPath = FileInfo.joinPaths(dir, basename + suffix + '.dll')
+		const libPath = FileInfo.joinPaths(dir, basename + '.dll')
 		list.push(libPath)
 	} else if (Qt.core.frameworkBuild) {
 		const fp = Qt[mod].libFilePathRelease

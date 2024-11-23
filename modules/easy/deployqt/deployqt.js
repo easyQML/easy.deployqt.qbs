@@ -14,9 +14,9 @@ function unionSets(lhs, rhs) {
 	return union
 }
 
-function pluginNameToFileName(libName, os) {
+function pluginNameToFileName(libName, os, debug) {
 	if (os.contains('windows')) {
-		return libName + '.dll'
+		return debug? libName + 'd.dll' : libName + '.dll'
 	} else if (os.contains('macos')) {
 		return 'lib' + libName + '.dylib'
 	}
@@ -178,7 +178,7 @@ function parseOtoolOutput(dynamicLib, output) {
 	return deps
 }
 
-function collectQmlImports(scannerFilePath, qrcFiles, importPath, os) {
+function collectQmlImports(scannerFilePath, qrcFiles, importPath, os, debug) {
 	const qmlimportscanner = new Process()
 	var args = qrcFiles.reduce(function (acc, input) {
 		acc.push(input.filePath)
@@ -192,7 +192,7 @@ function collectQmlImports(scannerFilePath, qrcFiles, importPath, os) {
 		.map(function (imp) {
 			return {
 				name: imp.name,
-				path: FileInfo.joinPaths(imp.path, pluginNameToFileName(imp.plugin, os)),
+				path: FileInfo.joinPaths(imp.path, pluginNameToFileName(imp.plugin, os, debug)),
 			}
 		})
 
@@ -283,7 +283,7 @@ function collectAssets(dir) {
 		}, files);
 }
 
-function pluginNamesToFileNames(pluginNames, os) {
+function pluginNamesToFileNames(pluginNames, os, debug) {
 	return pluginNames.map(function (name) {
 		const pathParts = name.split('/')
 
@@ -294,6 +294,6 @@ function pluginNamesToFileNames(pluginNames, os) {
 		const pluginType = pathParts[0]
 		const pluginName = pathParts[1]
 
-		return FileInfo.joinPaths(pluginType, pluginNameToFileName(pluginName, os))
+		return FileInfo.joinPaths(pluginType, pluginNameToFileName(pluginName, os, debug))
 	})
 }

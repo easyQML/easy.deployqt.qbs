@@ -18,6 +18,8 @@ Module {
 	property stringList plugins: []
 	property stringList excludePlugins: []
 
+	readonly property bool _debugBuild: qbs.buildVariant === 'debug'
+
 	Depends { name: 'Qt.qml'; condition: scanQml }
 
 	Group {
@@ -41,12 +43,12 @@ Module {
 	Group {
 		name: 'Qt plugins'
 		prefix: product.Qt.core.pluginPath + '/'
-		files: DeployQt.pluginNamesToFileNames(plugins, qbs.targetOS)
+		files: DeployQt.pluginNamesToFileNames(plugins, qbs.targetOS, _debugBuild)
 		fileTags: ['easy.deployqt.plugins']
 
 		excludeFiles: qbs.targetOS.contains('windows')
-			? qbs.buildVariant === 'debug'
-				? ['**/*[!d].dll']
+			? _debugBuild
+				? ['**/*[^d].dll']
 				: ['**/*d.dll']
 			: []
 	}
@@ -159,7 +161,8 @@ Module {
 					product.Qt.qml.qmlImportScannerFilePath,
 					(inputs['qrc'] || []),
 					product.Qt.qml.qmlPath,
-					product.qbs.targetOS
+					product.qbs.targetOS,
+					product.easy.deployqt._debugBuild
 				)
 
 				var file = new TextFile(output.filePath, TextFile.WriteOnly)
@@ -222,7 +225,11 @@ Module {
 					const sourcePath = imp.path
 					const folder = FileInfo.path(sourcePath)
 
-					var parser = new Qmldir.QmldirParser(FileInfo.joinPaths(folder, 'qmldir'), product.qbs.targetOS)
+					var parser = new Qmldir.QmldirParser(
+						FileInfo.joinPaths(folder, 'qmldir'),
+						product.qbs.targetOS,
+						product.easy.deployqt._debugBuild
+					)
 					parser.parse()
 
 					var allFiles = new Set([FileInfo.joinPaths(folder, 'qmldir')])

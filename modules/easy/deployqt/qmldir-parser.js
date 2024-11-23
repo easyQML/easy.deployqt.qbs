@@ -6,12 +6,13 @@ const FileInfo = require('qbs.FileInfo')
 const TextFile = require('qbs.TextFile')
 
 var QmldirParser = (function () {
-	function Parser(qmldirFilePath, os) {
+	function Parser(qmldirFilePath, os, debug) {
 		var qmldir = new TextFile(qmldirFilePath, TextFile.ReadOnly)
 		this.lines = qmldir.readAll().split('\n')
 		qmldir.close()
 
 		this.os = os
+		this.debug = debug
 
 		this.module = ''
 		this.plugins = new Set()
@@ -106,7 +107,7 @@ var QmldirParser = (function () {
 
 	Parser.prototype.pluginNameToFileName = function (libName) {
 		if (this.os.contains('windows')) {
-			return libName + '.dll'
+			return this.debug? libName + 'd.dll' : libName + '.dll'
 		} else if (this.os.contains('macos')) {
 			return 'lib' + libName + '.dylib'
 		}
